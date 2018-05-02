@@ -43,6 +43,8 @@ cc.Class({
         },
         **/
 
+        
+
         // 游戏得分
         score: 0,
         
@@ -111,6 +113,7 @@ cc.Class({
     // start () {},
 
     
+    
     update (dt) {
         
         // 更新游戏总时间
@@ -128,7 +131,6 @@ cc.Class({
 
         // for debug
         // this.gameTimerDisplay.string = 'Dura: ' + this.starDuration.toString();
-
 
 
 

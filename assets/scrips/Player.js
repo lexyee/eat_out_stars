@@ -29,6 +29,12 @@ cc.Class({
             url: cc.AudioClip
         },
 
+        //for debug
+        debugInfoDisplay: {
+            default: null,
+            type: cc.Label
+        },    
+
 
     },
 
@@ -63,6 +69,25 @@ cc.Class({
         return;
     },
     
+    onDeviceMotionEvent: function(event){
+        // cc.log(event.acc.x + "   " + event.acc.y);
+        // return (event.acc.x + "   " + event.acc.y);
+        
+        // for debug
+        // this.debugInfoDisplay.string = event.acc.x + "   " + event.acc.y;
+        
+        this.accel = Math.abs(event.acc.x * 2000);
+        
+        if (event.acc.x > 0){
+            this.accRight = true;
+            this.accLeft = false;
+        }
+        else{
+            this.accLeft = true;
+            this.accRight = false;
+        }
+
+    },
 
     setInputControl: function () {
         var self = this;
@@ -111,10 +136,21 @@ cc.Class({
 
         // 初始化键盘输入监听
         this.setInputControl();
+
+        // open Accelerometer
+        cc.systemEvent.setAccelerometerEnabled(true);
+        cc.systemEvent.on(cc.SystemEvent.EventType.DEVICEMOTION, this.onDeviceMotionEvent, this);
     },
 
     // start () {},
 
+    onDestroy () {
+        cc.systemEvent.setAccelerometerEnabled(false);
+        cc.systemEvent.off(cc.SystemEvent.EventType.DEVICEMOTION, this.onDeviceMotionEvent, this);
+    },
+
+
+    
     update: function (dt) {
         
         
