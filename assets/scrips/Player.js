@@ -30,10 +30,12 @@ cc.Class({
         },
 
         //for debug
+        /**
         debugInfoDisplay: {
             default: null,
             type: cc.Label
-        },    
+        }, 
+        **/
 
 
     },
@@ -74,9 +76,11 @@ cc.Class({
         // return (event.acc.x + "   " + event.acc.y);
         
         // for debug
-        // this.debugInfoDisplay.string = event.acc.x + "   " + event.acc.y;
+        // this.debugInfoDisplay.string = event.x + "   " + event.y;
         
+        /**
         this.accel = Math.abs(event.acc.x * 2000);
+
         
         if (event.acc.x > 0){
             this.accRight = true;
@@ -86,6 +90,7 @@ cc.Class({
             this.accLeft = true;
             this.accRight = false;
         }
+        **/
 
     },
 
@@ -124,6 +129,9 @@ cc.Class({
     // LIFE-CYCLE CALLBACKS:
 
     onLoad: function () {
+        
+        console.log('player loaded!');
+
         // 初始化跳跃动作
         this.jumpAction = this.setJumpAction();
         this.node.runAction(this.jumpAction);
@@ -137,16 +145,27 @@ cc.Class({
         // 初始化键盘输入监听
         this.setInputControl();
 
-        // open Accelerometer
-        cc.systemEvent.setAccelerometerEnabled(true);
-        cc.systemEvent.on(cc.SystemEvent.EventType.DEVICEMOTION, this.onDeviceMotionEvent, this);
+        // for cc open Accelerometer
+        // cc.systemEvent.setAccelerometerEnabled(true);
+        // cc.systemEvent.on(cc.SystemEvent.EventType.DEVICEMOTION, this.onDeviceMotionEvent, this);
+
+        // for wegame
+        // wx.onAccelerometerChange(this.onDeviceMotionEvent);
+
+        wx.startAccelerometer(true);
+
+
     },
 
     // start () {},
 
     onDestroy () {
-        cc.systemEvent.setAccelerometerEnabled(false);
-        cc.systemEvent.off(cc.SystemEvent.EventType.DEVICEMOTION, this.onDeviceMotionEvent, this);
+        // for cc
+        //cc.systemEvent.setAccelerometerEnabled(false);
+        //cc.systemEvent.off(cc.SystemEvent.EventType.DEVICEMOTION, this.onDeviceMotionEvent, this);
+
+        // for wegame
+        wx.stopAccelerometer();
     },
 
 
@@ -154,6 +173,29 @@ cc.Class({
     update: function (dt) {
         
         
+    	// for wegame
+    	var that = this;
+        wx.onAccelerometerChange(function(res) {
+			//console.log(res.x);
+  			//console.log(res.y);
+  			//console.log(res.z);
+
+  			// for debug
+  			// that.debugInfoDisplay.string = 'X: ' + res.x;
+  			that.accel = Math.abs(res.x * 2000);
+
+        
+        if (res.x > 0){
+            that.accRight = true;
+            that.accLeft = false;
+        }
+        else{
+            that.accLeft = true;
+            that.accRight = false;
+        }
+
+		});
+
 
         // 根据当前加速度方向每帧更新速度
         if (this.accLeft) {
